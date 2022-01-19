@@ -36,7 +36,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "*",
-        "orchestra/testbench": "7.0.*",
+        "orchestra/testbench": "^7.0",
         "php-coveralls/php-coveralls": "*"
     },
     "autoload": {
