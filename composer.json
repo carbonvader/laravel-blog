@@ -29,8 +29,8 @@
         }
     ],
     "require": {
-        "cviebrock/eloquent-sluggable": "dev-master",
-        "laravelium/feed": "dev-master",
+        "cviebrock/eloquent-sluggable": "dev-laravel-9-patch",
+        "laravelium/feed": "dev-laravel-9-patch",
         "intervention/image": "2.*",
         "laravel/helpers": "^1.3"
     },
