@@ -29,7 +29,7 @@
         }
     ],
     "require": {
-        "cviebrock/eloquent-sluggable": "dev-laravel-9-patch",
+        "cviebrock/eloquent-sluggable": "^9.0",
         "laravelium/feed": "dev-laravel-9-patch",
         "intervention/image": "2.*",
         "laravel/helpers": "^1.3"
@@ -62,10 +62,6 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/carbonvader/eloquent-sluggable.git"
-        },
         {
             "type": "vcs",
             "url": "https://github.com/carbonvader/laravel-feed.git"
