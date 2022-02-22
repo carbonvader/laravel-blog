@@ -385,7 +385,7 @@ abstract class Node extends Model {
     $instance = new static;
 
     return $instance->newQuery()
-                    ->whereNull($instance->getParentColumnName())
+                    ->whereNotNull($instance->getParentColumnName())
                     ->orderBy($instance->getQualifiedOrderColumnName());
   }
 
