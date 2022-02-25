@@ -3,6 +3,7 @@
 
 namespace BinshopsBlog\Models;
 
+use Carbon\Carbon;
 use Cviebrock\EloquentSluggable\Sluggable;
 use BinshopsBlog\Laravel\Fulltext\Indexable;
 use Illuminate\Database\Eloquent\Model;
@@ -66,6 +67,33 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
     public function search_result_page_title()
     {
         return $this->title;
+    }
+
+    public static function get_posts_with_category($request,$category_slug=null)
+    {
+        if ($category_slug == null)
+        {
+            $category_slug = app('website')->value;
+        }
+        $category = BinshopsCategoryTranslation::where("slug", $category_slug)->with('category')->firstOrFail()->category;
+        $posts = $category->posts()->where("binshops_post_categories.category_id", $category->id)->with(['postTranslations' => function ($query) use ($request)
+        {
+            $query->where("lang_id", '=', $request->get("lang_id"));
+        }
+        ])->get();
+
+        $posts = BinshopsPostTranslation::join('binshops_posts', 'binshops_post_translations.post_id', '=', 'binshops_posts.id')
+            ->where('lang_id', $request->get("lang_id"))
+            ->where("is_published", '=', true)
+            ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
+            ->orderBy("posted_at", "desc")
+            ->whereIn('binshops_posts.id', $posts->pluck('id'))
+            ->paginate(config("binshopsblog.per_page", 10));
+
+        // at the moment we handle this special case (viewing a category) by hard coding in the following two lines.
+        // You can easily override this in the view files.
+        \View::share('binshopsblog_category', $category); // so the view can say "You are viewing $CATEGORYNAME category posts"
+        return $posts;
     }
 
     /**
