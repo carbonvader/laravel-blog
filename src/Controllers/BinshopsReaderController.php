@@ -49,8 +49,7 @@ class BinshopsReaderController extends Controller
         //load category hierarchy
         $rootList = BinshopsCategory::rootsByWebsite()->get();
         BinshopsCategory::loadSiblingsWithList($rootList);
-        $popular_posts=BinshopsPostTranslation::get_popular_posts($request,"popular");
-
+        $popular_posts=BinshopsPostTranslation::get_popular_posts($request);
 
         return view("binshopsblog::index", [
             'lang_list' => BinshopsLanguage::all('locale', 'name'),
@@ -85,7 +84,7 @@ class BinshopsReaderController extends Controller
 
         $rootList = BinshopsCategory::rootsByWebsite()->get();
         BinshopsCategory::loadSiblingsWithList($rootList);
-        $popular_posts=BinshopsPostTranslation::get_posts_with_category($request,"popular");
+        $popular_posts=BinshopsPostTranslation::get_popular_posts($request);
 
         return view("binshopsblog::search", [
                 'lang_id' => $request->get('lang_id'),
@@ -132,7 +131,7 @@ class BinshopsReaderController extends Controller
             $captcha->runCaptchaBeforeShowingPosts($request, $blog_post);
         }
         $rootList = BinshopsCategory::rootsByWebsite()->get();
-        $popular_posts=BinshopsPostTranslation::get_posts_with_category($request,"popular");
+        $popular_posts=BinshopsPostTranslation::get_posts_with_category($request,null,true);
 
         return view("binshopsblog::single_post", [
             'post' => $blog_post,

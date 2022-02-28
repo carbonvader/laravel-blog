@@ -68,29 +68,28 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
     {
         return $this->title;
     }
-    public static function get_popular_posts($request,$category_slug=null)
+    public static function get_popular_posts($request)
     {
         $posts = BinshopsPostTranslation::join('binshops_posts', 'binshops_post_translations.post_id', '=', 'binshops_posts.id')
             ->where('lang_id', $request->get("lang_id"))
             ->where("is_published", '=', true)
             ->where("is_popular",'=',true)
             ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
-            ->orderBy("posted_at", "desc")
-            ->paginate(config("binshopsblog.per_page", 10));
+            ->orderBy("posted_at", "desc")->get();
 
         // at the moment we handle this special case (viewing a category) by hard coding in the following two lines.
         // You can easily override this in the view files.
         return $posts;
     }
 
-    public static function get_posts_with_category($request,$category_slug=null)
+    public static function get_posts_with_category($request,$category_slug=null,$random=false)
     {
         if ($category_slug == null)
         {
             $category_slug = app('website')->value;
         }
         $category = BinshopsCategoryTranslation::where("slug", $category_slug)->with('category')->firstOrFail()->category;
-        $posts = $category->posts()->where("binshops_post_categories.category_id", $category->id)->with(['postTranslations' => function ($query) use ($request)
+        $posts = $category->posts()->with(['postTranslations' => function ($query) use ($request)
         {
             $query->where("lang_id", '=', $request->get("lang_id"));
         }
@@ -100,13 +99,22 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
             ->where('lang_id', $request->get("lang_id"))
             ->where("is_published", '=', true)
             ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
-            ->orderBy("posted_at", "desc")
-            ->whereIn('binshops_posts.id', $posts->pluck('id'))
-            ->paginate(config("binshopsblog.per_page", 10));
+            ->whereIn('binshops_posts.id', $posts->pluck('id'));
+            if ($random===true)
+            {
+                $posts=$posts->inRandomOrder()
+                    ->limit(config('binshopsblog.interest_post_limit', 3))->get();
+            }
+            else{
+
+                $posts=$posts->orderBy("posted_at", "desc")
+                    ->paginate(config("binshopsblog.per_page", 10));
+
+            }
 
         // at the moment we handle this special case (viewing a category) by hard coding in the following two lines.
         // You can easily override this in the view files.
-        \View::share('binshopsblog_category', $category); // so the view can say "You are viewing $CATEGORYNAME category posts"
+        // \View::share('binshopsblog_category', $category); // so the view can say "You are viewing $CATEGORYNAME category posts"
         return $posts;
     }
 
