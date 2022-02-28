@@ -61,6 +61,23 @@
                 publicly viewable.
             </small>
         </div>
+    </div>
+    <div class="col-sm-6 col-md-4">
+        <div class="form-group">
+            <label for="blog_is_published">Popular?</label>
+
+            <select name='is_published' class='form-control' id='blog_is_published'
+                    aria-describedby='blog_is_published_help'>
+
+                <option @if(old("is_popular",$post->is_popular) == '0') selected='selected' @endif value='0'>Not
+                    Popular
+                </option>
+                <option @if(old("is_popular",$post->is_popular) == '1') selected='selected' @endif value='1'>
+                    Popular
+                </option>
+
+            </select>
+        </div>
 
     </div>
     <div class='col-sm-6 col-md-4'>

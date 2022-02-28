@@ -68,6 +68,20 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
     {
         return $this->title;
     }
+    public static function get_popular_posts($request,$category_slug=null)
+    {
+        $posts = BinshopsPostTranslation::join('binshops_posts', 'binshops_post_translations.post_id', '=', 'binshops_posts.id')
+            ->where('lang_id', $request->get("lang_id"))
+            ->where("is_published", '=', true)
+            ->where("is_popular",'=',true)
+            ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
+            ->orderBy("posted_at", "desc")
+            ->paginate(config("binshopsblog.per_page", 10));
+
+        // at the moment we handle this special case (viewing a category) by hard coding in the following two lines.
+        // You can easily override this in the view files.
+        return $posts;
+    }
 
     public static function get_posts_with_category($request,$category_slug=null)
     {

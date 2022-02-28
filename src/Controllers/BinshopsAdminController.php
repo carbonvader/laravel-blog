@@ -124,6 +124,7 @@ class BinshopsAdminController extends Controller
             Helpers::flash_message("Post already exists - try to change the slug for this language");
         }else {
             $new_blog_post->is_published = $request['is_published'];
+            $new_blog_post->is_popular = $request['is_popular'];
             $new_blog_post->user_id = \Auth::user()->id;
             $new_blog_post->save();
 
@@ -182,6 +183,7 @@ class BinshopsAdminController extends Controller
                 Helpers::flash_message("Post already exists - try to change the slug for this language");
             }else{
                 $new_blog_post->is_published = $request['is_published'];
+                $new_blog_post->is_popular = $request['is_popular'];
                 $new_blog_post->user_id = \Auth::user()->id;
                 $new_blog_post->save();
 
@@ -323,6 +325,7 @@ class BinshopsAdminController extends Controller
             Helpers::flash_message("Post already exists - try to change the slug for this language");
         }else {
             $new_blog_post->is_published = $request['is_published'];
+            $new_blog_post->is_popular = $request['is_popular'];
             $new_blog_post->user_id = \Auth::user()->id;
             $new_blog_post->save();
 

@@ -16,6 +16,7 @@ class BinshopsPost extends Model
      */
     public $casts = [
         'is_published' => 'boolean',
+        'is_popular' => 'boolean',
     ];
 
     /**
@@ -30,6 +31,7 @@ class BinshopsPost extends Model
      */
     public $fillable = [
         'is_published',
+        'is_popular',
         'posted_at',
     ];
 

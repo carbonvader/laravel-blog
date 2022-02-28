@@ -49,7 +49,7 @@ class BinshopsReaderController extends Controller
         //load category hierarchy
         $rootList = BinshopsCategory::rootsByWebsite()->get();
         BinshopsCategory::loadSiblingsWithList($rootList);
-        $popular_posts=BinshopsPostTranslation::get_posts_with_category($request,"popular");
+        $popular_posts=BinshopsPostTranslation::get_popular_posts($request,"popular");
 
 
         return view("binshopsblog::index", [
