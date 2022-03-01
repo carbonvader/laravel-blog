@@ -276,7 +276,7 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
      */
     public function url($loacle)
     {
-        return route("binshopsblog.single", [$loacle, $this->slug]);
+        return route("binshopsblog.single", $this->slug);
     }
 
     /**

@@ -64,9 +64,9 @@
     </div>
     <div class="col-sm-6 col-md-4">
         <div class="form-group">
-            <label for="blog_is_published">Popular?</label>
+            <label for="blog_is_popular">Popular?</label>
 
-            <select name='is_published' class='form-control' id='blog_is_published'
+            <select name='is_popular' class='form-control' id='blog_is_published'
                     aria-describedby='blog_is_published_help'>
 
                 <option @if(old("is_popular",$post->is_popular) == '0') selected='selected' @endif value='0'>Not
