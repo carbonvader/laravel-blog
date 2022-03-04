@@ -42,14 +42,14 @@ class BinshopsReaderController extends Controller
         //todo
 
         $categoryChain = null;
-        $posts=BinshopsPostTranslation::get_posts_with_category($request,$category_slug);
+        $posts = BinshopsPostTranslation::get_posts_with_category($request, $category_slug);
         $title = 'Son Eklenenler'; // default title...
         //search$title = 'Posts in ' . $category->category_name . " category"; // hardcode title here...
 
         //load category hierarchy
         $rootList = BinshopsCategory::rootsByWebsite()->get();
         BinshopsCategory::loadSiblingsWithList($rootList);
-        $popular_posts=BinshopsPostTranslation::get_popular_posts($request);
+        $popular_posts = BinshopsPostTranslation::get_popular_posts($request);
 
         return view("binshopsblog::index", [
             'lang_list' => BinshopsLanguage::all('locale', 'name'),
@@ -76,15 +76,35 @@ class BinshopsReaderController extends Controller
         {
             throw new \Exception("Search is disabled");
         }
-        $query = $request->get("s");
-        $search = new Search();
-        $search_results = $search->run($query);
+        $search = $request->get("s");
 
-        \View::share("title", "Arama sonucu " . e($query));
+        $category_slug = app('website')->value;
+        $category = BinshopsCategoryTranslation::where("slug", $category_slug)->with('category')->firstOrFail()->category;
+        $posts = $category->posts()->with(['postTranslations' => function ($query) use ($request)
+        {
+            $query->where("lang_id", '=', $request->get("lang_id"));
+        }
+        ])->get();
+
+        $posts = BinshopsPostTranslation::join('binshops_posts', 'binshops_post_translations.post_id', '=', 'binshops_posts.id')
+            ->where('lang_id', $request->get("lang_id"))
+            ->where("is_published", '=', true)
+            ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
+            ->where(function ($query) use ($search){
+                $query->orWhere('binshops_post_translations.title','like','%'.$search.'%')
+                    ->orWhere('binshops_post_translations.subtitle','like','%'.$search.'%')
+                    ->orWhere('binshops_post_translations.post_body','like','%'.$search.'%');
+            })
+            ->whereIn('binshops_posts.id', $posts->pluck('id'))
+            ->paginate(config("binshopsblog.per_page", 10));;
+
+
+
+        $title="{$posts->count()} İçerik Bulundu;";
 
         $rootList = BinshopsCategory::rootsByWebsite()->get();
         BinshopsCategory::loadSiblingsWithList($rootList);
-        $popular_posts=BinshopsPostTranslation::get_popular_posts($request);
+        $popular_posts = BinshopsPostTranslation::get_popular_posts($request);
 
         return view("binshopsblog::search", [
                 'lang_id' => $request->get('lang_id'),
@@ -92,8 +112,9 @@ class BinshopsReaderController extends Controller
                 'categories' => $rootList,
                 'category_slug' => null,
                 'popular_posts' => $popular_posts,
-                'query' => $query,
-                'search_results' => $search_results]
+                'query' => $search,
+                'title' => $title,
+                'search_results' => $posts]
         );
 
     }
@@ -131,7 +152,7 @@ class BinshopsReaderController extends Controller
             $captcha->runCaptchaBeforeShowingPosts($request, $blog_post);
         }
         $rootList = BinshopsCategory::rootsByWebsite()->get();
-        $popular_posts=BinshopsPostTranslation::get_posts_with_category($request,null,true);
+        $popular_posts = BinshopsPostTranslation::get_posts_with_category($request, null, true);
 
         return view("binshopsblog::single_post", [
             'post' => $blog_post,
@@ -139,10 +160,10 @@ class BinshopsReaderController extends Controller
             'comments' => $blog_post->post->comments()
                 ->with("user")
                 ->get(),
-            'category_slug'=>null,
+            'category_slug' => null,
             'captcha' => $captcha,
             'categories' => $rootList,
-            'popular_posts'=>$popular_posts,
+            'popular_posts' => $popular_posts,
             'locale' => $request->get("locale")
         ]);
     }
