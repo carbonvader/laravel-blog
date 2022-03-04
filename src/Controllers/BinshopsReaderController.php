@@ -146,7 +146,6 @@ class BinshopsReaderController extends Controller
             ["slug", "=", $blogPostSlug],
             ['lang_id', "=", $request->get("lang_id")]
         ])->firstOrFail();
-
         if ($captcha = $this->getCaptchaObject())
         {
             $captcha->runCaptchaBeforeShowingPosts($request, $blog_post);
@@ -162,6 +161,7 @@ class BinshopsReaderController extends Controller
                 ->get(),
             'category_slug' => null,
             'captcha' => $captcha,
+            'author'=>$blog_post->post->author,
             'categories' => $rootList,
             'popular_posts' => $popular_posts,
             'locale' => $request->get("locale")
