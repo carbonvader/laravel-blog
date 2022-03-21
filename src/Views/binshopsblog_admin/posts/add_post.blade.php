@@ -23,7 +23,7 @@
         $('#language_list').change(function (){
             $('#add-post-form').attr('action', store_toggle_url);
 
-            $('#selected_lang').val($('#language_list').val());
+            $('#selected_langw').val($('#language_list').val());
             $('#language_list').val(preLang);
             console.log($('#language_list').val())
             $('#add-post-form').trigger('submit');

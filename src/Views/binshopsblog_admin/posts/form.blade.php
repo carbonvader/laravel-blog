@@ -93,6 +93,19 @@
                     HH:MM:SS</code> format.
             </small>
         </div>
+    </div>
+
+    <div class='col-sm-6 col-md-4'>
+
+        <div class="form-group">
+            <label for="readable_time">Readable Time</label>
+            <input type="text" class="form-control" id="readable_time" aria-describedby="readable_time"
+                   name='readable_time'
+                   value="{{old("readable_time",$post->readable_time ?? config("binshopsblog.readable_time")  )}}">
+            <small id="readable_time_help" class="form-text text-muted">yanına dakika ifadesi otomatik yazılacaktır
+            </small>
+        </div>
+
 
 
     </div>
