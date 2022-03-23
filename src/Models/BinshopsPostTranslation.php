@@ -88,19 +88,34 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
         if ($category_slug == null)
         {
             $category_slug = app('website')->value;
+            $categoryId=app('website')->blogCategoryId();
+            $category_id=BinshopsCategory::where('parent_id','=',$categoryId)->pluck('id');
+            $category=BinshopsCategory::with('posts')
+                ->where('parent_id','=',$categoryId)->get();
+            $loop=array();
+            foreach ($category as $categories)
+            {
+                foreach ($categories->posts as $posts)
+                {
+                    $loop[]=$posts->id;
+                }
+            }
+            $posts=$loop;
         }
-        $category = BinshopsCategoryTranslation::where("slug", $category_slug)->with('category')->firstOrFail()->category;
-        $posts = $category->posts()->with(['postTranslations' => function ($query) use ($request)
-        {
-            $query->where("lang_id", '=', $request->get("lang_id"));
+        else{
+            $category = BinshopsCategoryTranslation::where("slug", $category_slug)->with('category')->firstOrFail()->category;
+            $posts = $category->posts()->with(['postTranslations' => function ($query) use ($request)
+            {
+                $query->where("lang_id", '=', $request->get("lang_id"));
+            }
+            ])->get();
+            $posts=$posts->pluck('id');
         }
-        ])->get();
-
         $posts = BinshopsPostTranslation::join('binshops_posts', 'binshops_post_translations.post_id', '=', 'binshops_posts.id')
             ->where('lang_id', $request->get("lang_id"))
             ->where("is_published", '=', true)
             ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
-            ->whereIn('binshops_posts.id', $posts->pluck('id'));
+            ->whereIn('binshops_posts.id', $posts);
             if ($random===true)
             {
                 $posts=$posts->inRandomOrder()
