@@ -85,11 +85,18 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
 
     public static function get_posts_with_category($request,$category_slug=null,$random=false)
     {
+
+        $category = BinshopsCategoryTranslation::where("slug", $category_slug?:app('website')->value)->with('category')->firstOrFail()->category;
+        $posts = $category->posts()->with(['postTranslations' => function ($query) use ($request)
+        {
+            $query->where("lang_id", '=', $request->get("lang_id"));
+        }
+        ])->get();
+        $post_id=$posts->pluck('id');
         if ($category_slug == null)
         {
-            $category_slug = app('website')->value;
+
             $categoryId=app('website')->blogCategoryId();
-            $category_id=BinshopsCategory::where('parent_id','=',$categoryId)->pluck('id');
             $category=BinshopsCategory::with('posts')
                 ->where('parent_id','=',$categoryId)->get();
             $loop=array();
@@ -100,33 +107,24 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
                     $loop[]=$posts->id;
                 }
             }
-            $posts=$loop;
-        }
-        else{
-            $category = BinshopsCategoryTranslation::where("slug", $category_slug)->with('category')->firstOrFail()->category;
-            $posts = $category->posts()->with(['postTranslations' => function ($query) use ($request)
-            {
-                $query->where("lang_id", '=', $request->get("lang_id"));
-            }
-            ])->get();
-            $posts=$posts->pluck('id');
+            $post_id =array_merge($post_id->toArray(),$loop);
         }
         $posts = BinshopsPostTranslation::join('binshops_posts', 'binshops_post_translations.post_id', '=', 'binshops_posts.id')
             ->where('lang_id', $request->get("lang_id"))
             ->where("is_published", '=', true)
             ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
-            ->whereIn('binshops_posts.id', $posts);
-            if ($random===true)
-            {
-                $posts=$posts->inRandomOrder()
-                    ->limit(config('binshopsblog.interest_post_limit', 3))->get();
-            }
-            else{
+            ->whereIn('binshops_posts.id', $post_id);
+        if ($random===true)
+        {
+            $posts=$posts->inRandomOrder()
+                ->limit(config('binshopsblog.interest_post_limit', 3))->get();
+        }
+        else{
 
-                $posts=$posts->orderBy("posted_at", "desc")
-                    ->paginate(config("binshopsblog.per_page", 10));
+            $posts=$posts->orderBy("posted_at", "desc")
+                ->paginate(config("binshopsblog.per_page", 10));
 
-            }
+        }
 
         // at the moment we handle this special case (viewing a category) by hard coding in the following two lines.
         // You can easily override this in the view files.

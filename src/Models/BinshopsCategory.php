@@ -50,6 +50,14 @@ class BinshopsCategory extends Node
             }
         }
     }
+    public function getUrl()
+    {
+        $url="category/".app('website')->value;
+        if ($this->parent_id>0){
+            $url.='/'.$this->categoryTranslations[0]->slug;
+        }
+        return $url;
+    }
 
 //    public function parent()
 //    {
