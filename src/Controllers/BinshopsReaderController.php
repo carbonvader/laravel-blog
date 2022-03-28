@@ -152,6 +152,7 @@ class BinshopsReaderController extends Controller
         }
         $rootList = BinshopsCategory::rootsByWebsite()->get();
         $popular_posts = BinshopsPostTranslation::get_posts_with_category($request, null, $blog_post,config('binshopsblog.interest_post_limit', 3));
+        $interested_posts=BinshopsPostTranslation::get_posts_with_category($request, null, $blog_post,2);
 
         return view("binshopsblog::single_post", [
             'post' => $blog_post,
@@ -164,7 +165,7 @@ class BinshopsReaderController extends Controller
             'author'=>$blog_post->post->author,
             'categories' => $rootList,
             'popular_posts' => $popular_posts,
-            'interested_posts'=>BinshopsPostTranslation::get_posts_with_category($request, null, $blog_post,2),
+            'interested_posts'=>$interested_posts,
             'locale' => $request->get("locale")
         ]);
     }
