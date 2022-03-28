@@ -83,7 +83,7 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
         return $posts;
     }
 
-    public static function get_posts_with_category($request,$category_slug=null,$random=false)
+    public static function get_posts_with_category($request,$category_slug=null,$blog=false,$limit=8)
     {
 
         $category = BinshopsCategoryTranslation::where("slug", $category_slug?:app('website')->value)->with('category')->firstOrFail()->category;
@@ -92,32 +92,42 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
             $query->where("lang_id", '=', $request->get("lang_id"));
         }
         ])->get();
-        $post_id=$posts->pluck('id');
+        $post_id=$posts->pluck('id')->toArray();
         if ($category_slug == null)
         {
 
-            $categoryId=app('website')->blogCategoryId();
-            $category=BinshopsCategory::with('posts')
-                ->where('parent_id','=',$categoryId)->get();
             $loop=array();
+            $interestedCategories=$blog?$blog->post->categories:null;
+            if ($interestedCategories){
+                $category=$interestedCategories;
+                $post_id=[];
+            }
+            else{
+                $categoryId=app('website')->blogCategoryId();
+                $category=BinshopsCategory::with('posts')
+                    ->where('parent_id','=',$categoryId)->get();
+            }
             foreach ($category as $categories)
             {
                 foreach ($categories->posts as $posts)
                 {
-                    $loop[]=$posts->id;
+                    if ($blog && $posts->id != $blog->post->id)
+                    {
+                        $loop[]=$posts->id;
+                    }
                 }
             }
-            $post_id =array_merge($post_id->toArray(),$loop);
+            $post_id =array_merge($post_id,$loop);
         }
         $posts = BinshopsPostTranslation::join('binshops_posts', 'binshops_post_translations.post_id', '=', 'binshops_posts.id')
             ->where('lang_id', $request->get("lang_id"))
             ->where("is_published", '=', true)
             ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
             ->whereIn('binshops_posts.id', $post_id);
-        if ($random===true)
+        if ($interestedCategories)
         {
             $posts=$posts->inRandomOrder()
-                ->limit(config('binshopsblog.interest_post_limit', 3))->get();
+                ->limit($limit)->get();
         }
         else{
 

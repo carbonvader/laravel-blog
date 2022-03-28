@@ -57,12 +57,7 @@ class BinshopsCommentWriterController extends Controller
         }
 
         $new_comment = $this->createNewComment($request, $blog_post);
-
-        return view("binshopsblog::saved_comment", [
-            'captcha' => $captcha,
-            'blog_post' => $post_translation,
-            'new_comment' => $new_comment
-        ]);
+        return redirect()->back()->with('message','Başarılı, Yorumunuz onay bekliyor.');
 
     }
 
