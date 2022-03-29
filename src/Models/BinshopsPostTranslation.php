@@ -124,7 +124,7 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
             ->where("is_published", '=', true)
             ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
             ->whereIn('binshops_posts.id', $post_id);
-        if ($interestedCategories)
+        if (isset($interestedCategories))
         {
             $posts=$posts->inRandomOrder()
                 ->limit($limit)->get();
