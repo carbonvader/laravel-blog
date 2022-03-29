@@ -192,12 +192,12 @@
                     </div>
                 @endif
 
-                <label for="blog_{{$size_key}}">Image - {{$size_info['name']}} (optional)</label>
+                <label for="blog_{{$size_key}}">Image - {{$size_info['name']}}</label>
                 <small id="blog_{{$size_key}}_help" class="form-text text-muted">Upload {{$size_info['name']}} image -
                     <code>{{$size_info['w']}}&times;{{$size_info['h']}}px</code> - it will
                     get automatically resized if larger
                 </small>
-                <input class="form-control" type="file" name="{{$size_key}}" id="blog_{{$size_key}}"
+                <input class="form-control" type="file" required name="{{$size_key}}" id="blog_{{$size_key}}"
                        aria-describedby="blog_{{$size_key}}_help">
 
                 @if($post_translation->has_image($size_info['basic_key']))
