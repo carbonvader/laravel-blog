@@ -197,7 +197,7 @@
                     <code>{{$size_info['w']}}&times;{{$size_info['h']}}px</code> - it will
                     get automatically resized if larger
                 </small>
-                <input class="form-control" type="file" required name="{{$size_key}}" id="blog_{{$size_key}}"
+                <input class="form-control" type="file" @if ($loop->first) required @endif name="{{$size_key}}" id="blog_{{$size_key}}"
                        aria-describedby="blog_{{$size_key}}_help">
 
                 @if($post_translation->has_image($size_info['basic_key']))
