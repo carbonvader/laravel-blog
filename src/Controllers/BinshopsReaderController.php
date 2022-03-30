@@ -95,12 +95,13 @@ class BinshopsReaderController extends Controller
                     ->orWhere('binshops_post_translations.subtitle','like','%'.$search.'%')
                     ->orWhere('binshops_post_translations.post_body','like','%'.$search.'%');
             })
-            ->whereIn('binshops_posts.id', $posts->pluck('id'))
-            ->paginate(config("binshopsblog.per_page", 10));;
+            ->whereIn('binshops_posts.id', $posts->pluck('id'));
+
 
 
 
         $title="{$posts->count()} İçerik Bulundu;";
+        $posts=$posts->paginate(config("binshopsblog.per_page", 10));
 
         $rootList = BinshopsCategory::rootsByWebsite()->get();
         BinshopsCategory::loadSiblingsWithList($rootList);
