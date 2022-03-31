@@ -137,6 +137,8 @@ class BinshopsAdminController extends Controller
             $translation->readable_time = $request['readable_time'];
             $translation->slug = $request['slug'];
             $translation->use_view_file = $request['use_view_file'];
+            $translation->readable_time = $request['readable_time'];
+
 
             $translation->lang_id = $request['lang_id'];
             $translation->post_id = $new_blog_post->id;
@@ -196,6 +198,7 @@ class BinshopsAdminController extends Controller
                 $translation->meta_desc = $request['meta_desc'];
                 $translation->slug = $request['slug'];
                 $translation->use_view_file = $request['use_view_file'];
+                $translation->readable_time = $request['readable_time'];
 
                 $translation->lang_id = $request['lang_id'];
                 $translation->post_id = $new_blog_post->id;
@@ -338,6 +341,7 @@ class BinshopsAdminController extends Controller
             $translation->meta_desc = $request['meta_desc'];
             $translation->slug = $request['slug'];
             $translation->use_view_file = $request['use_view_file'];
+            $translation->readable_time = $request['readable_time'];
 
             $translation->lang_id = $request['lang_id'];
             $translation->post_id = $new_blog_post->id;

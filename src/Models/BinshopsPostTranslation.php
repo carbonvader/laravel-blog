@@ -111,9 +111,13 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
             {
                 foreach ($categories->posts as $posts)
                 {
-                    if ($blog && $posts->id != $blog->post->id)
+                    if ($blog && $posts->id == $blog->post->id)
                     {
+                        continue;
+                    }
+                    else{
                         $loop[]=$posts->id;
+
                     }
                 }
             }

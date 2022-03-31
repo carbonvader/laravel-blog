@@ -101,7 +101,7 @@
             <label for="readable_time">Readable Time</label>
             <input type="text" class="form-control" id="readable_time" aria-describedby="readable_time"
                    name='readable_time'
-                   value="{{old("readable_time",$post->readable_time ?? config("binshopsblog.readable_time")  )}}">
+                   value="{{isset($post->postTranslations[0]->readable_time) ? $post->postTranslations[0]->readable_time : old("readable_time", config("binshopsblog.readable_time")  )}}">
             <small id="readable_time_help" class="form-text text-muted">yanına dakika ifadesi otomatik yazılacaktır
             </small>
         </div>
@@ -197,7 +197,7 @@
                     <code>{{$size_info['w']}}&times;{{$size_info['h']}}px</code> - it will
                     get automatically resized if larger
                 </small>
-                <input class="form-control" type="file" @if ($loop->first) required @endif name="{{$size_key}}" id="blog_{{$size_key}}"
+                <input class="form-control" type="file" @if ($loop->first && !$post_translation->has_image($size_info['basic_key'])) required @endif name="{{$size_key}}" id="blog_{{$size_key}}"
                        aria-describedby="blog_{{$size_key}}_help">
 
                 @if($post_translation->has_image($size_info['basic_key']))
