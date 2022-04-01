@@ -43,7 +43,7 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
      */
     public function language()
     {
-        return $this->hasOne(BinshopsLanguage::class,"lang_id");
+        return $this->hasOne(BinshopsLanguage::class, "lang_id");
     }
 
     /**
@@ -69,13 +69,27 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
     {
         return $this->title;
     }
+
     public static function get_popular_posts($request)
     {
+        $loop = array();
+
+        $categoryId = app('website')->blogCategoryId();
+        $category = BinshopsCategory::with('posts')
+            ->where('parent_id', '=', $categoryId)->get();
+        foreach ($category as $categories)
+        {
+            foreach ($categories->posts as $posts)
+            {
+                    $loop[] = $posts->id;
+            }
+        }
         $posts = BinshopsPostTranslation::join('binshops_posts', 'binshops_post_translations.post_id', '=', 'binshops_posts.id')
             ->where('lang_id', $request->get("lang_id"))
             ->where("is_published", '=', true)
-            ->where("is_popular",'=',true)
+            ->where("is_popular", '=', true)
             ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
+            ->whereIn('binshops_posts.id', $loop)
             ->orderBy("posted_at", "desc")->get();
 
         // at the moment we handle this special case (viewing a category) by hard coding in the following two lines.
@@ -83,29 +97,31 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
         return $posts;
     }
 
-    public static function get_posts_with_category($request,$category_slug=null,$blog=false,$limit=8)
+    public static function get_posts_with_category($request, $category_slug = null, $blog = false, $limit = 8)
     {
 
-        $category = BinshopsCategoryTranslation::where("slug", $category_slug?:app('website')->value)->with('category')->firstOrFail()->category;
+        $category = BinshopsCategoryTranslation::where("slug", $category_slug ?: app('website')->value)->with('category')->firstOrFail()->category;
         $posts = $category->posts()->with(['postTranslations' => function ($query) use ($request)
         {
             $query->where("lang_id", '=', $request->get("lang_id"));
         }
         ])->get();
-        $post_id=$posts->pluck('id')->toArray();
+        $post_id = $posts->pluck('id')->toArray();
         if ($category_slug == null)
         {
 
-            $loop=array();
-            $interestedCategories=$blog?$blog->post->categories:null;
-            if ($interestedCategories){
-                $category=$interestedCategories;
-                $post_id=[];
+            $loop = array();
+            $interestedCategories = $blog ? $blog->post->categories : null;
+            if ($interestedCategories)
+            {
+                $category = $interestedCategories;
+                $post_id = [];
             }
-            else{
-                $categoryId=app('website')->blogCategoryId();
-                $category=BinshopsCategory::with('posts')
-                    ->where('parent_id','=',$categoryId)->get();
+            else
+            {
+                $categoryId = app('website')->blogCategoryId();
+                $category = BinshopsCategory::with('posts')
+                    ->where('parent_id', '=', $categoryId)->get();
             }
             foreach ($category as $categories)
             {
@@ -115,13 +131,14 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
                     {
                         continue;
                     }
-                    else{
-                        $loop[]=$posts->id;
+                    else
+                    {
+                        $loop[] = $posts->id;
 
                     }
                 }
             }
-            $post_id =array_merge($post_id,$loop);
+            $post_id = array_merge($post_id, $loop);
         }
         $posts = BinshopsPostTranslation::join('binshops_posts', 'binshops_post_translations.post_id', '=', 'binshops_posts.id')
             ->where('lang_id', $request->get("lang_id"))
@@ -130,12 +147,13 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
             ->whereIn('binshops_posts.id', $post_id);
         if (isset($interestedCategories))
         {
-            $posts=$posts->inRandomOrder()
+            $posts = $posts->inRandomOrder()
                 ->limit($limit)->get();
         }
-        else{
+        else
+        {
 
-            $posts=$posts->orderBy("posted_at", "desc")
+            $posts = $posts->orderBy("posted_at", "desc")
                 ->paginate(config("binshopsblog.per_page", 10));
 
         }
@@ -153,7 +171,8 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
      */
     public function full_view_file_path()
     {
-        if (!$this->use_view_file) {
+        if (!$this->use_view_file)
+        {
             throw new \RuntimeException("use_view_file was empty, so cannot use " . __METHOD__);
         }
         return "custom_blog_posts." . $this->use_view_file;
@@ -197,21 +216,23 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
      */
     public function image_tag($size = 'medium', $auto_link = true, $img_class = null, $anchor_class = null)
     {
-        if (!$this->has_image($size)) {
+        if (!$this->has_image($size))
+        {
             // return an empty string if this image does not exist.
             return '';
         }
         $url = e($this->image_url($size));
         $alt = e($this->title);
         $img = "<img src='$url' alt='$alt' class='" . e($img_class) . "' >";
-        return $auto_link ? "<a class='" . e($anchor_class) . "' href='" . e($this->url( app()->getLocale() )) . "'>$img</a>" : $img;
+        return $auto_link ? "<a class='" . e($anchor_class) . "' href='" . e($this->url(app()->getLocale())) . "'>$img</a>" : $img;
 
     }
 
     public function generate_introduction($max_len = 500)
     {
         $base_text_to_use = $this->short_description;
-        if (!trim($base_text_to_use)) {
+        if (!trim($base_text_to_use))
+        {
             $base_text_to_use = $this->post_body;
         }
         $base_text_to_use = strip_tags($base_text_to_use);
@@ -222,23 +243,29 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
 
     public function post_body_output()
     {
-        if (config("binshopsblog.use_custom_view_files") && $this->use_view_file) {
+        if (config("binshopsblog.use_custom_view_files") && $this->use_view_file)
+        {
             // using custom view files is enabled, and this post has a use_view_file set, so render it:
             $return = view("binshopsblog::partials.use_view_file", ['post' => $this])->render();
-        } else {
+        }
+        else
+        {
             // just use the plain ->post_body
             $return = $this->post_body;
         }
 
 
-        if (!config("binshopsblog.echo_html")) {
+        if (!config("binshopsblog.echo_html"))
+        {
             // if this is not true, then we should escape the output
-            if (config("binshopsblog.strip_html")) {
+            if (config("binshopsblog.strip_html"))
+            {
                 $return = strip_tags($return);
             }
 
             $return = e($return);
-            if (config("binshopsblog.auto_nl2br")) {
+            if (config("binshopsblog.auto_nl2br"))
+            {
                 $return = nl2br($return);
             }
         }
@@ -258,13 +285,15 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
     {
 
 
-        if (array_key_exists("image_" . $size, config("binshopsblog.image_sizes"))) {
+        if (array_key_exists("image_" . $size, config("binshopsblog.image_sizes")))
+        {
             return true;
         }
 
         // was an error!
 
-        if (starts_with($size, "image_")) {
+        if (starts_with($size, "image_"))
+        {
             // $size starts with image_, which is an error
             /* the config/binshopsblog.php and the DB columns SHOULD have keys that start with image_$size
             however when using methods such as image_url() or has_image() it SHOULD NOT start with 'image_'
@@ -292,11 +321,13 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
      */
     public function gen_seo_title()
     {
-        if ($this->seo_title) {
+        if ($this->seo_title)
+        {
             return $this->seo_title;
         }
         return $this->title;
     }
+
     /**
      * Returns the public facing URL to view this blog post
      *
