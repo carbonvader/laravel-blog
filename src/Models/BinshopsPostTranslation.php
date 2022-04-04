@@ -76,7 +76,7 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
 
         $categoryId = app('website')->blogCategoryId();
         $category = BinshopsCategory::with('posts')
-            ->where('parent_id', '=', $categoryId)->get();
+            ->where('parent_id', '=', $categoryId)->orWhere('id','=',$categoryId)->get();
         foreach ($category as $categories)
         {
             foreach ($categories->posts as $posts)

@@ -166,6 +166,14 @@
               name='short_description'>{{old("short_description",$post_translation->short_description)}}</textarea>
     <small id="blog_short_description_help" class="form-text text-muted">Short description (optional - only useful if you use in your template views)</small>
 </div>
+<div class="form-group">
+    <input class="" type="checkbox" value="1"
+           @if($post->noindex==1) checked='checked'
+           @endif name='noindex' id="noindex">
+    <label class="form-check-label" for="noindex">
+       No Index
+    </label>
+</div>
 
 @if(config("binshopsblog.image_upload_enabled",true))
 

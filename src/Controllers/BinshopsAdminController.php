@@ -125,6 +125,7 @@ class BinshopsAdminController extends Controller
         }else {
             $new_blog_post->is_published = $request['is_published'];
             $new_blog_post->is_popular = $request['is_popular'];
+            $new_blog_post->noindex = $request['noindex'];
             $new_blog_post->user_id = \Auth::user()->id;
             $new_blog_post->save();
 
@@ -187,6 +188,7 @@ class BinshopsAdminController extends Controller
             }else{
                 $new_blog_post->is_published = $request['is_published'];
                 $new_blog_post->is_popular = $request['is_popular'];
+                $new_blog_post->noindex = $request['noindex'];
                 $new_blog_post->user_id = \Auth::user()->id;
                 $new_blog_post->save();
 
@@ -330,6 +332,7 @@ class BinshopsAdminController extends Controller
         }else {
             $new_blog_post->is_published = $request['is_published'];
             $new_blog_post->is_popular = $request['is_popular'];
+            $new_blog_post->noindex = $request['noindex'];
             $new_blog_post->user_id = \Auth::user()->id;
             $new_blog_post->save();
 
