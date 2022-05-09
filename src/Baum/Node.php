@@ -399,6 +399,15 @@ abstract class Node extends Model {
           ->orderBy($instance->getQualifiedOrderColumnName());
   }
 
+    public static function rootsByWebsiteWithInc()
+    {
+        $instance = new static;
+        $categoryId=app('website')->blogCategoryId();
+        return $instance->newQuery()
+            ->where('parent_id','=',$categoryId)
+            ->orderBy($instance->getQualifiedOrderColumnName());
+    }
+
   /**
    * Static query scope. Returns a query scope with all nodes which are at
    * the end of a branch.

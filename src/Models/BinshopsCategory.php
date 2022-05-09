@@ -64,20 +64,20 @@ class BinshopsCategory extends Node
 //        return $this->belongsTo('BinshopsBlog\Models\BinshopsCategory', 'parent_id');
 //    }
 //
-//    public function children()
-//    {
-//        return $this->hasMany('BinshopsBlog\Models\BinshopsCategory', 'parent_id');
-//    }
+    public function children()
+    {
+        return $this->hasMany('BinshopsBlog\Models\BinshopsCategory', 'parent_id');
+    }
 //
 //    // recursive, loads all descendants
-//    private function childrenRecursive()
-//    {
-//        return $this->children()->with('children')->get();
-//    }
+    private function childrenRecursive()
+    {
+        return $this->children()->with('children')->get();
+    }
 //
-//    public function loadChildren(){
-//        $this->childrenCat = $this->childrenRecursive();
-//    }
+    public function loadChildren(){
+        $this->childrenCat = $this->childrenRecursive();
+    }
 
 //    public function scopeApproved($query)
 //    {

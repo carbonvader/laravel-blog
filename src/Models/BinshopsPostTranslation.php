@@ -107,6 +107,9 @@ class BinshopsPostTranslation extends Model implements SearchResultInterface
         }
         ])->get();
         $post_id = $posts->pluck('id')->toArray();
+        $categoryId = app('website')->blogCategoryId();
+        $category = BinshopsCategory::with('posts')
+            ->where('parent_id', '=', $categoryId)->get();
         if ($category_slug == null)
         {
 

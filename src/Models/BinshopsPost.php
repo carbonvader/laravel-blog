@@ -31,6 +31,7 @@ class BinshopsPost extends Model
      */
     public $fillable = [
         'is_published',
+        'noindex',
         'is_popular',
         'posted_at',
     ];

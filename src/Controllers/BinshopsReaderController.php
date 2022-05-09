@@ -152,6 +152,17 @@ class BinshopsReaderController extends Controller
             $captcha->runCaptchaBeforeShowingPosts($request, $blog_post);
         }
         $rootList = BinshopsCategory::rootsByWebsite()->get();
+        $myBlog=false;
+
+        foreach($blog_post->post->categories as $key =>$category)
+        {
+            if ($category->categoryTranslations[0]->category_name==app('website')->value){
+                $myBlog=true;
+            }
+        }
+        if (!$myBlog){
+            return abort(404);
+        }
         $popular_posts = BinshopsPostTranslation::get_posts_with_category($request, null, $blog_post,config('binshopsblog.interest_post_limit', 3));
         $interested_posts=BinshopsPostTranslation::get_posts_with_category($request, null, $blog_post,2);
 
