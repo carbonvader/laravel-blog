@@ -124,6 +124,8 @@ class BinshopsAdminController extends Controller
             Helpers::flash_message("Post already exists - try to change the slug for this language");
         }else {
             $new_blog_post->is_published = $request['is_published'];
+            $new_blog_post->is_popular = $request['is_popular'];
+            $new_blog_post->noindex = $request['noindex'];
             $new_blog_post->user_id = \Auth::user()->id;
             $new_blog_post->save();
 
@@ -133,8 +135,11 @@ class BinshopsAdminController extends Controller
             $translation->post_body = $request['post_body'];
             $translation->seo_title = $request['seo_title'];
             $translation->meta_desc = $request['meta_desc'];
+            $translation->readable_time = $request['readable_time'];
             $translation->slug = $request['slug'];
             $translation->use_view_file = $request['use_view_file'];
+            $translation->readable_time = $request['readable_time'];
+
 
             $translation->lang_id = $request['lang_id'];
             $translation->post_id = $new_blog_post->id;
@@ -182,6 +187,8 @@ class BinshopsAdminController extends Controller
                 Helpers::flash_message("Post already exists - try to change the slug for this language");
             }else{
                 $new_blog_post->is_published = $request['is_published'];
+                $new_blog_post->is_popular = $request['is_popular'];
+                $new_blog_post->noindex = $request['noindex'];
                 $new_blog_post->user_id = \Auth::user()->id;
                 $new_blog_post->save();
 
@@ -193,6 +200,7 @@ class BinshopsAdminController extends Controller
                 $translation->meta_desc = $request['meta_desc'];
                 $translation->slug = $request['slug'];
                 $translation->use_view_file = $request['use_view_file'];
+                $translation->readable_time = $request['readable_time'];
 
                 $translation->lang_id = $request['lang_id'];
                 $translation->post_id = $new_blog_post->id;
@@ -323,6 +331,8 @@ class BinshopsAdminController extends Controller
             Helpers::flash_message("Post already exists - try to change the slug for this language");
         }else {
             $new_blog_post->is_published = $request['is_published'];
+            $new_blog_post->is_popular = $request['is_popular'];
+            $new_blog_post->noindex = $request['noindex'];
             $new_blog_post->user_id = \Auth::user()->id;
             $new_blog_post->save();
 
@@ -334,6 +344,7 @@ class BinshopsAdminController extends Controller
             $translation->meta_desc = $request['meta_desc'];
             $translation->slug = $request['slug'];
             $translation->use_view_file = $request['use_view_file'];
+            $translation->readable_time = $request['readable_time'];
 
             $translation->lang_id = $request['lang_id'];
             $translation->post_id = $new_blog_post->id;

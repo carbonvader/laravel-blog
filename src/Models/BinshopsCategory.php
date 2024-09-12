@@ -50,26 +50,34 @@ class BinshopsCategory extends Node
             }
         }
     }
+    public function getUrl()
+    {
+        $url="category/".app('website')->value;
+        if ($this->parent_id>0){
+            $url.='/'.$this->categoryTranslations[0]->slug;
+        }
+        return $url;
+    }
 
 //    public function parent()
 //    {
 //        return $this->belongsTo('BinshopsBlog\Models\BinshopsCategory', 'parent_id');
 //    }
 //
-//    public function children()
-//    {
-//        return $this->hasMany('BinshopsBlog\Models\BinshopsCategory', 'parent_id');
-//    }
+    public function children()
+    {
+        return $this->hasMany('BinshopsBlog\Models\BinshopsCategory', 'parent_id');
+    }
 //
 //    // recursive, loads all descendants
-//    private function childrenRecursive()
-//    {
-//        return $this->children()->with('children')->get();
-//    }
+    private function childrenRecursive()
+    {
+        return $this->children()->with('children')->get();
+    }
 //
-//    public function loadChildren(){
-//        $this->childrenCat = $this->childrenRecursive();
-//    }
+    public function loadChildren(){
+        $this->childrenCat = $this->childrenRecursive();
+    }
 
 //    public function scopeApproved($query)
 //    {

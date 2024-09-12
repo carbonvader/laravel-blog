@@ -1,6 +1,7 @@
 <?php
 namespace BinshopsBlog\Baum;
 
+use App\Enums\Website;
 use BinshopsBlog\Baum\Extensions\Eloquent\Collection;
 use BinshopsBlog\Baum\Extensions\Eloquent\Model;
 
@@ -388,6 +389,24 @@ abstract class Node extends Model {
                     ->whereNull($instance->getParentColumnName())
                     ->orderBy($instance->getQualifiedOrderColumnName());
   }
+
+  public static function rootsByWebsite()
+  {
+      $instance = new static;
+      $categoryId=app('website')->blogCategoryId();
+      return $instance->newQuery()
+          ->where('parent_id','=',$categoryId)
+          ->orderBy($instance->getQualifiedOrderColumnName());
+  }
+
+    public static function rootsByWebsiteWithInc()
+    {
+        $instance = new static;
+        $categoryId=app('website')->blogCategoryId();
+        return $instance->newQuery()
+            ->where('parent_id','=',$categoryId)
+            ->orderBy($instance->getQualifiedOrderColumnName());
+    }
 
   /**
    * Static query scope. Returns a query scope with all nodes which are at

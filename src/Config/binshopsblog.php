@@ -66,24 +66,24 @@ return [
 
 
         'image_large' => [ // this key must start with 'image_'. This is what the DB column must be named
-            'w' => 1000, // width in pixels
-            'h' => 700, //height
+            'w' => 1350, // width in pixels
+            'h' => 390, //height
             'basic_key' => "large", // same as the main key, but WITHOUT 'image_'.
             'name' => "Large", // description, used in the admin panel
             'enabled' => true, // see note above
             'crop' => true, // if true then we will crop and resize to exactly w/h. If false then it will maintain proportions, with a max width of 'w' and max height of 'h'
         ],
         'image_medium' => [ // this key must start with 'image_'. This is what the DB column must be named
-            'w' => 600, // width in pixels
-            'h' => 400, //height
+            'w' => 310, // width in pixels
+            'h' => 150, //height
             'basic_key' => "medium",// same as the main key, but WITHOUT 'image_'.
             'name' => "Medium",// description, used in the admin panel
             'enabled' => true, // see note above
             'crop' => true, // if true then we will crop and resize to exactly w/h. If false then it will maintain proportions, with a max width of 'w' and max height of 'h'. If you use these images as part of your website template then you should probably have this to true.
         ],
         'image_thumbnail' => [ // this key must start with 'image_'. This is what the DB column must be named
-            'w' => 150, // width in pixels
-            'h' => 150, //height
+            'w' => 115, // width in pixels
+            'h' => 90, //height
             'basic_key' => "thumbnail",// same as the main key, but WITHOUT 'image_'.
             'name' => "Thumbnail",// description, used in the admin panel
             'enabled' => true, // see note above
@@ -117,8 +117,8 @@ return [
     'captcha' => [
         'captcha_enabled' => true, // true = we should use a captcha, false = turn it off. If comments are disabled this makes no difference.
         'captcha_type' => \BinshopsBlog\Captcha\Basic::class, // this should be a class that implements the \BinshopsBlog\Interfaces\CaptchaInterface interface
-        'basic_question' => "What is the opposite of white?", // a simple captcha question to always ask (if captcha_type is set to 'basic'
-        'basic_answers' => "black,dark", // comma separated list of possible answers. Don't worry about case.
+        'basic_question' => "Beyazın zıt anlamlısı nedir?", // a simple captcha question to always ask (if captcha_type is set to 'basic'
+        'basic_answers' => "siyah,koyu", // comma separated list of possible answers. Don't worry about case.
     ],
 
     ////////// RSS FEED

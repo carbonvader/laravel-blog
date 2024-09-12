@@ -45,7 +45,7 @@ class BinshopsCategoryTranslation extends Model
         foreach ($chain as $category){
             $theChainString .=  "/" . $category->categoryTranslations()->where('lang_id' , $this->lang_id)->first()->slug;
         }
-        return route("binshopsblog.view_category",[$loacle, $theChainString]);
+        return route("binshopsblog.view_category",[$theChainString]);
     }
 
     /**

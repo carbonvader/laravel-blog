@@ -1,6 +1,5 @@
 @extends("layouts.app",['title'=>$title])
 @section("content")
-
     <div class='row'>
         <div class='col-sm-12'>
             <div class="row">

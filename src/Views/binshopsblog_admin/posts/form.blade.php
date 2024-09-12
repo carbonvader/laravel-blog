@@ -61,6 +61,23 @@
                 publicly viewable.
             </small>
         </div>
+    </div>
+    <div class="col-sm-6 col-md-4">
+        <div class="form-group">
+            <label for="blog_is_popular">Popular?</label>
+
+            <select name='is_popular' class='form-control' id='blog_is_published'
+                    aria-describedby='blog_is_published_help'>
+
+                <option @if(old("is_popular",$post->is_popular) == '0') selected='selected' @endif value='0'>Not
+                    Popular
+                </option>
+                <option @if(old("is_popular",$post->is_popular) == '1') selected='selected' @endif value='1'>
+                    Popular
+                </option>
+
+            </select>
+        </div>
 
     </div>
     <div class='col-sm-6 col-md-4'>
@@ -76,6 +93,19 @@
                     HH:MM:SS</code> format.
             </small>
         </div>
+    </div>
+
+    <div class='col-sm-6 col-md-4'>
+
+        <div class="form-group">
+            <label for="readable_time">Readable Time</label>
+            <input type="text" class="form-control" id="readable_time" aria-describedby="readable_time"
+                   name='readable_time'
+                   value="{{isset($post->postTranslations[0]->readable_time) ? $post->postTranslations[0]->readable_time : old("readable_time", config("binshopsblog.readable_time")  )}}">
+            <small id="readable_time_help" class="form-text text-muted">yanına dakika ifadesi otomatik yazılacaktır
+            </small>
+        </div>
+
 
 
     </div>
@@ -136,6 +166,14 @@
               name='short_description'>{{old("short_description",$post_translation->short_description)}}</textarea>
     <small id="blog_short_description_help" class="form-text text-muted">Short description (optional - only useful if you use in your template views)</small>
 </div>
+<div class="form-group">
+    <input class="" type="checkbox" value="1"
+           @if($post->noindex==1) checked='checked'
+           @endif name='noindex' id="noindex">
+    <label class="form-check-label" for="noindex">
+       No Index
+    </label>
+</div>
 
 @if(config("binshopsblog.image_upload_enabled",true))
 
@@ -162,12 +200,12 @@
                     </div>
                 @endif
 
-                <label for="blog_{{$size_key}}">Image - {{$size_info['name']}} (optional)</label>
+                <label for="blog_{{$size_key}}">Image - {{$size_info['name']}}</label>
                 <small id="blog_{{$size_key}}_help" class="form-text text-muted">Upload {{$size_info['name']}} image -
                     <code>{{$size_info['w']}}&times;{{$size_info['h']}}px</code> - it will
                     get automatically resized if larger
                 </small>
-                <input class="form-control" type="file" name="{{$size_key}}" id="blog_{{$size_key}}"
+                <input class="form-control" type="file" @if ($loop->first && !$post_translation->has_image($size_info['basic_key'])) required @endif name="{{$size_key}}" id="blog_{{$size_key}}"
                        aria-describedby="blog_{{$size_key}}_help">
 
                 @if($post_translation->has_image($size_info['basic_key']))
